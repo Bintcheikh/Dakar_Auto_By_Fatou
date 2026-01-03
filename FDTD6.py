@@ -178,6 +178,7 @@ if Choices == "Scrape data using BeautifulSoup":
             Locations_df.to_csv("Locations_data.csv", index=False)
             load(Locations_df, "Locations_data", "3", "103")
 
+
 # ===================== DOWNLOAD =====================
 elif Choices Choices == "Download scraped data":
     files = {
@@ -200,7 +201,11 @@ elif Choices Choices == "Download scraped data":
 
     if not found:
         st.error("Aucune donnée trouvée dans le dossier data/. Veuillez scraper d'abord.")
-
+    files = {
+        "Véhicules": DATA_DIR / "VEHICULE1 (1).csv",
+        "Motos": DATA_DIR / "Moto.csv",
+        "Locations": DATA_DIR / "Location.csv"
+    }
 # ===================== DASHBOARD =====================
 elif Choices == "Dashboard of the data":
     path = DATA_DIR / "Moto.csv"
