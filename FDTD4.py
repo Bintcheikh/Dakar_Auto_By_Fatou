@@ -204,88 +204,115 @@ elif Choices == "Download scraped data":
 
     if not found:
         st.error("Aucune donnée trouvée dans le dossier data/. Veuillez scraper d'abord.")
-        
+
 elif Choices == "Dashboard of the data":
 
-    # ================= VEHICULES =================
-    if os.path.exists("Vehicles_data.csv"):
-        st.markdown("## Véhicules")
-        df1 = pd.read_csv("Vehicles_data.csv")
-        df1['prix'] = pd.to_numeric(df1['prix'], errors='coerce')
-        df1['annee'] = pd.to_numeric(df1['annee'], errors='coerce')
-        df1 = df1.dropna(subset=['prix','annee'])
+    BASE_DIR = Path(__file__).resolve().parent
+    DATA_DIR = BASE_DIR / "Data"
 
-        # Top marques
-        st.subheader("Top 10 marques - Véhicules")
-        plt.figure(figsize=(5,6))
-        sns.countplot(y="marque", data=df1, order=df1['marque'].value_counts().index[:10], palette="viridis")
-        plt.title("Top 5 marques de véhicules")
-        plt.xlabel("Nombre de véhicules")
-        plt.ylabel("Marque")
-        st.pyplot(plt.gcf())
+    # Fonction de nettoyage
+    def clean_data(df, col_marque='MARQUE (V1)'):
+        # --- MARQUE / MODELE / VILLE ---
+        def extract_marque_modele_ville(value):
+            if pd.isna(value):
+                return None, None, None
+            parts = str(value).split()
+            marque1 = parts[0] if len(parts) > 0 else None
+            modele = parts[1] if len(parts) > 2 else None
+            ville = parts[-1] if len(parts) > 2 else None
+            return marque1, modele, ville
 
-        # Prix moyen par année
-        st.subheader("Prix moyen par année - Véhicules")
-        plt.figure(figsize=(10,6))
-        df1.groupby("annee")["prix"].mean().plot(kind='bar', color="orange")
-        plt.title("Prix moyen des véhicules par année")
-        plt.xlabel("Année")
-        plt.ylabel("Prix moyen (F CFA)")
-        plt.xticks(rotation=45)
-        st.pyplot(plt.gcf())
+        df[['Marque1', 'Modele', 'Ville']] = df[col_marque].apply(
+            lambda x: pd.Series(extract_marque_modele_ville(x))
+        )
 
-    # ================= MOTOS =================
-    if os.path.exists("Motocycles_data.csv"):
-        st.markdown("## Motos")
-        df2 = pd.read_csv("Motocycles_data.csv")
-        df2['prix'] = pd.to_numeric(df2['prix'], errors='coerce')
-        df2['annee'] = pd.to_numeric(df2['annee'], errors='coerce')
-        df2 = df2.dropna(subset=['prix','annee'])
+        # --- ANNEE ---
+        df['ANNEE'] = df['ANNEE'].astype(str).str.extract(r'(\d{4})')
+        df['ANNEE'] = pd.to_numeric(df['ANNEE'], errors='coerce')
 
-        st.subheader("Top 5 marques - Motos")
-        plt.figure(figsize=(5,6))
-        sns.countplot(y="marque", data=df2, order=df2['marque'].value_counts().index[:10], palette="magma")
-        plt.title("Top 5 marques de motos")
-        plt.xlabel("Nombre de motos")
-        plt.ylabel("Marque")
-        st.pyplot(plt.gcf())
+        # --- KILOMETRAGE ---
+        df['KILOMETRAGE'] = df['KILOMETRAGE'].astype(str).str.replace(r'[^\d]', '', regex=True)
+        df['KILOMETRAGE'] = pd.to_numeric(df['KILOMETRAGE'], errors='coerce')
 
-        st.subheader("Prix moyen par année - Motos")
-        plt.figure(figsize=(5,6))
-        df2.groupby("annee")["prix"].mean().plot(kind='bar', color="teal")
-        plt.title("Prix moyen des motos par année")
-        plt.xlabel("Année")
-        plt.ylabel("Prix moyen (F CFA)")
-        plt.xticks(rotation=45)
-        st.pyplot(plt.gcf())
+        # --- PRIX ---
+        df['PRIX'] = df['PRIX'].astype(str).str.replace(r'[^\d]', '', regex=True)
+        df['PRIX'] = pd.to_numeric(df['PRIX'], errors='coerce')
 
-    # ================= LOCATIONS =================
-    if os.path.exists("Locations_data.csv"):
-        st.markdown("## Locations")
-        df3 = pd.read_csv("Locations_data.csv")
-        df3['prix'] = pd.to_numeric(df3['prix'], errors='coerce')
-        df3['annee'] = pd.to_numeric(df3['annee'], errors='coerce')
-        df3 = df3.dropna(subset=['prix','annee'])
+        # --- Supprimer lignes vides essentielles ---
+        df = df.dropna(subset=['Marque1', 'Modele', 'ANNEE', 'PRIX'])
 
-        st.subheader("Top 5 marques - Locations")
-        plt.figure(figsize=(5,6))
-        sns.countplot(y="marque", data=df3, order=df3['marque'].value_counts().index[:10], palette="coolwarm")
-        plt.title("Top 5 marques de locations")
-        plt.xlabel("Nombre de véhicules")
-        plt.ylabel("Marque")
-        st.pyplot(plt.gcf())
+        return df
 
-        st.subheader("Prix moyen par année - Locations")
-        plt.figure(figsize=(5,6))
-        df3.groupby("annee")["prix"].mean().plot(kind='bar', color="purple")
-        plt.title("Prix moyen des locations par année")
-        plt.xlabel("Année")
-        plt.ylabel("Prix moyen (F CFA)")
-        plt.xticks(rotation=45)
-        st.pyplot(plt.gcf())
+    # Liste des fichiers
+    files = {
+        "Véhicules": DATA_DIR / "Vehicles_data.csv",
+        "Motos": DATA_DIR / "Motocycles_data.csv",
+        "Locations": DATA_DIR / "Locations_data.csv"
+    }
 
-    # ================= Aucune donnée =================
-    if not any(os.path.exists(f) for f in ["Vehicles_data.csv","Motocycles_data.csv","Locations_data.csv"]):
+    # Parcours des catégories
+    for category, path in files.items():
+        if path.exists():
+            st.markdown(f"## {category}")
+
+            # Lecture des données brutes
+            df_raw = pd.read_csv(path)
+
+            # Nettoyage
+            df = clean_data(df_raw)
+
+            # ===== KPI =====
+            col1, col2, col3, col4, col5 = st.columns(5)
+            col1.metric("Total annonces", len(df))
+            col2.metric("Prix moyen (F CFA)", int(df['PRIX'].mean()))
+            col3.metric("Prix min (F CFA)", int(df['PRIX'].min()))
+            col4.metric("Prix max (F CFA)", int(df['PRIX'].max()))
+            col5.metric("Kilométrage moyen", int(df['KILOMETRAGE'].mean() if 'KILOMETRAGE' in df else 0))
+
+            # ===== Aperçu Table =====
+            st.subheader("Aperçu des données")
+            st.dataframe(df[['Marque1', 'Modele', 'Ville', 'ANNEE', 'PRIX', 'KILOMETRAGE']].head(20))
+
+            # ===== Top Marques =====
+            st.subheader("Top 10 marques")
+            plt.figure(figsize=(6,5))
+            sns.countplot(
+                y="Marque1",
+                data=df,
+                order=df['Marque1'].value_counts().index[:10],
+                palette="viridis" if category=="Véhicules" else "magma" if category=="Motos" else "coolwarm"
+            )
+            plt.xlabel("Nombre d'annonces")
+            plt.ylabel("Marque")
+            st.pyplot(plt.gcf())
+            plt.close()
+
+            # ===== Top Modèles =====
+            st.subheader("Top 10 modèles")
+            plt.figure(figsize=(6,5))
+            sns.countplot(
+                y="Modele",
+                data=df,
+                order=df['Modele'].value_counts().index[:10],
+                palette="viridis" if category=="Véhicules" else "magma" if category=="Motos" else "coolwarm"
+            )
+            plt.xlabel("Nombre d'annonces")
+            plt.ylabel("Modèle")
+            st.pyplot(plt.gcf())
+            plt.close()
+
+            # ===== Prix moyen par année =====
+            st.subheader("Prix moyen par année")
+            plt.figure(figsize=(8,5))
+            df.groupby("ANNEE")["PRIX"].mean().plot(kind='bar', color="orange" if category=="Véhicules" else "teal" if category=="Motos" else "purple")
+            plt.xlabel("Année")
+            plt.ylabel("Prix moyen (F CFA)")
+            plt.xticks(rotation=45)
+            st.pyplot(plt.gcf())
+            plt.close()
+
+    # Aucune donnée disponible
+    if not any(path.exists() for path in files.values()):
         st.error("Veuillez scraper au moins une catégorie pour voir le dashboard.")
 
 else:  # Evaluate
