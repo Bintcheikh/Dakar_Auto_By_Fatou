@@ -178,13 +178,9 @@ if Choices == "Scrape data using BeautifulSoup":
             Locations_df.to_csv("Locations_data.csv", index=False)
             load(Locations_df, "Locations_data", "3", "103")
 
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-import streamlit as st
-from pathlib import Path
 
-DATA_DIR = Path("data")  # dossier où se trouve Moto.csv
+
+DATA_DIR = Path("Data")  # dossier où se trouve Moto.csv
 
 # ===================== DOWNLOAD =====================
 if Choices == "Download scraped data":
