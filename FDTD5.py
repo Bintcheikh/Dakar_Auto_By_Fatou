@@ -274,7 +274,7 @@ elif Choices == "Dashboard of the data":
             sns.countplot(
                 y="Marque1",
                 data=df,
-                order=df['Marque1'].value_counts().index[:10],
+                order=df['Marque1'].value_counts().index[:5],
                 palette="viridis" if category=="Véhicules" else "magma" if category=="Motos" else "coolwarm"
             )
             plt.xlabel("Nombre d'annonces")
@@ -288,7 +288,7 @@ elif Choices == "Dashboard of the data":
             sns.countplot(
                 y="Modele",
                 data=df,
-                order=df['Modele'].value_counts().index[:10],
+                order=df['Modele'].value_counts().index[:5],
                 palette="viridis" if category=="Véhicules" else "magma" if category=="Motos" else "coolwarm"
             )
             plt.xlabel("Nombre d'annonces")
