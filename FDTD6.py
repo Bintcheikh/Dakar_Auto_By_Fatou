@@ -178,9 +178,6 @@ if Choices == "Scrape data using BeautifulSoup":
             Locations_df.to_csv("Locations_data.csv", index=False)
             load(Locations_df, "Locations_data", "3", "103")
 
-
-DATA_DIR = Path("Data")  # dossier où se trouve Moto.csv
-
 # ===================== DOWNLOAD =====================
 elif Choices Choices == "Download scraped data":
     files = {
