@@ -179,11 +179,10 @@ if Choices == "Scrape data using BeautifulSoup":
             load(Locations_df, "Locations_data", "3", "103")
 
 
-
 DATA_DIR = Path("Data")  # dossier où se trouve Moto.csv
 
 # ===================== DOWNLOAD =====================
-if Choices == "Download scraped data":
+elif Choices Choices == "Download scraped data":
     files = {
         "Motos": DATA_DIR / "Moto.csv"
     }
