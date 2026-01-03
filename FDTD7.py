@@ -184,33 +184,6 @@ DATA_DIR = BASE_DIR / "Data"
 sns.set_style("whitegrid")
             
 # ===================== DOWNLOAD =====================
-elif Choices Choices == "Download scraped data":
-    files = {
-        "Motos": DATA_DIR / "Moto.csv"
-    }
-
-    found = False
-    st.markdown("Télécharger les données brutes disponibles")
-
-    for name, path in files.items():
-        if path.exists():
-            df = pd.read_csv(path)
-            st.download_button(
-                label=f"Télécharger {name}",
-                data=df.to_csv(index=False),
-                file_name=path.name,
-                mime="text/csv"
-            )
-            found = True
-
-    if not found:
-        st.error("Aucune donnée trouvée dans le dossier data/. Veuillez scraper d'abord.")
-    files = {
-        "Véhicules": DATA_DIR / "VEHICULE1 (1).csv",
-        "Motos": DATA_DIR / "Moto.csv",
-        "Locations": DATA_DIR / "Location.csv"
-    }
-
 # ===================== DOWNLOAD =====================
 if Choices == "Download scraped data":
     path = DATA_DIR / "Moto.csv"
