@@ -181,9 +181,7 @@ if Choices == "Scrape data using BeautifulSoup":
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "Data"
 
-sns.set_style("whitegrid")
-            
-# ===================== DOWNLOAD =====================
+sns.set_style("whitegrid")        
 # ===================== DOWNLOAD =====================
 if Choices == "Download scraped data":
     path = DATA_DIR / "Moto.csv"
