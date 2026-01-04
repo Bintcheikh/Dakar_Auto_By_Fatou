@@ -361,7 +361,7 @@ if Choices == "Dashboard of the data":
             # ===== APERÇU =====
             st.subheader("Aperçu des locations")
             st.dataframe(
-                df_loc[['Marque1', 'Modele', , 'Ville', 'ANNEE1', 'PRIX1']].head(20)
+                df_loc[['Marque1', 'Modele', 'Ville', 'ANNEE1', 'PRIX1']].head(20)
             )
 
             # ===== TOP 5 MARQUES =====
