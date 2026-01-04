@@ -268,7 +268,7 @@ if Choices == "Dashboard of the data":
                     .str.replace(r'[^\d]', '', regex=True)
                 )
                 df['PRIX1'] = pd.to_numeric(df['PRIX1'], errors='coerce')
-
+                df['PRIX1'].fillna(df['PRIX1'].median(), inplace=True)
                 # ---- SUPPRESSION LIGNES VIDES ESSENTIELLES ----
                 df = df.dropna(subset=['Marque1', 'Modele', 'PRIX1'])
 
@@ -280,7 +280,7 @@ if Choices == "Dashboard of the data":
             col1, col2, col3 = st.columns(3)
             col1.metric("Total annonces", len(df_moto))
             col2.metric("Prix moyen (F CFA)", int(df_moto['PRIX1'].mean()))
-            col3.metric("Kilométrage moyen", int(df_moto['KILOMETRAGE'].mean()))
+            col3.etric("Prix maximum (F CFA)", int(df_moto['PRIX1'].max()))
 
             # ===== APERÇU =====
             st.subheader("Aperçu des motos")
@@ -343,7 +343,7 @@ if Choices == "Dashboard of the data":
                     .str.replace(r'[^\d]', '', regex=True)
                 )
                 df['PRIX1'] = pd.to_numeric(df['PRIX1'], errors='coerce')
-
+                df['PRIX1'].fillna(df['PRIX1'].median(), inplace=True)
                 # ---- SUPPRESSION LIGNES VIDES ESSENTIELLES ----
                 df = df.dropna(subset=['Marque1', 'Modele', 'PRIX1'])
 
@@ -352,14 +352,16 @@ if Choices == "Dashboard of the data":
             df_loc = clean_location(df_raw)
 
             # ===== KPI =====
-            col1, col2 = st.columns(2)
+            col1, col2, col3 , col4  = st.columns(4)
             col1.metric("Total annonces", len(df_loc))
-            col2.metric("Prix moyen (F CFA)", int(df_loc['PRIX1'].mean()))
+            col2.metric("Prix minimum de location (F CFA)", int(df_loc['PRIX1'].min()))
+            col3.metric("Prix moyen de location (F CFA)", int(df_loc['PRIX1'].mean()))
+            col4.metric("Prix maximun de location (F CFA)", int(df_loc['PRIX1'].max()))
 
             # ===== APERÇU =====
             st.subheader("Aperçu des locations")
             st.dataframe(
-                df_loc[['Marque1', 'Modele', 'ANNEE1', 'PRIX1']].head(20)
+                df_loc[['Marque1', 'Modele', , 'Ville', 'ANNEE1', 'PRIX1']].head(20)
             )
 
             # ===== TOP 5 MARQUES =====
