@@ -183,7 +183,7 @@ DATA_DIR = BASE_DIR / "Data"
 
 sns.set_style("whitegrid")        
 # ===================== DOWNLOAD =====================
-elif Choices == "Download scraped data":
+if Choices == "Download scraped data":
     path = DATA_DIR / "Moto.csv"
     
     if path.exists():
@@ -200,7 +200,7 @@ elif Choices == "Download scraped data":
         st.error("Aucune donnée trouvée dans le dossier Data/. Veuillez scraper d'abord.")
 
 # ===================== DASHBOARD =====================
-elif Choices == "Dashboard of the data":
+if Choices == "Dashboard of the data":
     path = DATA_DIR / "Moto.csv"
 
     if not path.exists():
