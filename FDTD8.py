@@ -245,12 +245,12 @@ if Choices == "Dashboard of the data":
             df['PRIX1'] = pd.to_numeric(df['PRIX1'], errors='coerce')
 
             # Remplacer valeurs manquantes par la médiane
-            df['ANNEE1'].fillna(df['ANNEE1'].median(), inplace=True)
-            df['KILOMETRAGE'].fillna(df['KILOMETRAGE'].median(), inplace=True)
+            'df['ANNEE1'].fillna(df['ANNEE1'].median(), inplace=True)
+            'df['KILOMETRAGE'].fillna(df['KILOMETRAGE'].median(), inplace=True)
             df['PRIX1'].fillna(df['PRIX1'].median(), inplace=True)
 
             # Supprimer lignes essentielles vides
-            df = df.dropna(subset=['Marque1', 'Modele'])
+            df = df.dropna(subset=['Marque1', 'Modele', 'Annee1'])
             return df
 
         df = clean_moto(df_raw)
@@ -259,7 +259,7 @@ if Choices == "Dashboard of the data":
         col1, col2, col3, col4, col5 = st.columns(5)
         col1.metric("Total annonces", len(df))
         col2.metric("Prix moyen (F CFA)", int(df['PRIX1'].mean()))
-        col3.metric("Prix min (F CFA)", int(df['PRIX1'].min()))
+        'col3.metric("Prix min (F CFA)", int(df['PRIX1'].min()))
         col4.metric("Prix max (F CFA)", int(df['PRIX1'].max()))
         col5.metric("Kilométrage moyen", int(df['KILOMETRAGE'].mean()))
 
@@ -268,7 +268,7 @@ if Choices == "Dashboard of the data":
         st.dataframe(df[['Marque1', 'Modele', 'Ville', 'ANNEE1', 'PRIX1', 'KILOMETRAGE']].head(20))
 
         # ===== Top 5 Marques =====
-        st.subheader("Top 5 marques")
+        st.subheader("Top 5 marques de motos en Annonce")
         plt.figure(figsize=(6,5))
         sns.countplot(
             y="Marque1",
@@ -282,7 +282,7 @@ if Choices == "Dashboard of the data":
         plt.close()
 
         # ===== Top 5 Modèles =====
-        st.subheader("Top 5 modèles")
+        st.subheader("Top 5 modèles de motos en Annonce")
         plt.figure(figsize=(6,5))
         sns.countplot(
             y="Modele",
@@ -306,14 +306,14 @@ if Choices == "Dashboard of the data":
         plt.close()
 
         # ===== Prix moyen par modèle =====
-        st.subheader("Prix moyen par modèle")
-        plt.figure(figsize=(8,5))
-        df.groupby("Modele")["PRIX1"].mean().sort_values(ascending=False).plot(kind='bar', color="orange")
-        plt.xlabel("Modèle")
-        plt.ylabel("Prix moyen (F CFA)")
-        plt.xticks(rotation=45)
-        st.pyplot(plt.gcf())
-        plt.close()
+        #st.subheader("Prix moyen par modèle")
+        #plt.figure(figsize=(8,5))
+        #df.groupby("Modele")["PRIX1"].mean().sort_values(ascending=False).plot(kind='bar', color="orange")
+        #plt.xlabel("Modèle")
+        #plt.ylabel("Prix moyen (F CFA)")
+        #plt.xticks(rotation=45)
+        #st.pyplot(plt.gcf())
+        #plt.close()
 
 else:  # Evaluate
     st.markdown("<h3 style='text-align: center;'>Give your Feedback</h3>", unsafe_allow_html=True)
